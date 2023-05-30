@@ -7,7 +7,6 @@ app.use(express.json());
 app.use(require("./routes/categories.route"));
 app.use(require("./routes/client.route"));
 app.use(require("./routes/drug.route"));
-// app.use(require("./routes/cart.route"));
 
 
 (async () => {

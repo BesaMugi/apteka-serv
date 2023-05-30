@@ -7,6 +7,10 @@ const ClientSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    cart: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "Drug",
+    }],
 });
 
 const Client = mongoose.model("Client", ClientSchema);
