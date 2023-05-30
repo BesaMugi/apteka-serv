@@ -26,5 +26,12 @@ module.exports.clientController = {
         }).then(() => {
             res.json("Пользователь изменен")
         })
+    },
+    patchClientCash: async (req, res) => {
+        const data = await Client.findByIdAndUpdate(req.params.id, {
+            cash: req.body.cash
+        }).then(() => {
+            res.json("Читы на деньги")
+        })
     }
 }
