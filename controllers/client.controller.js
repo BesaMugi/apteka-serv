@@ -1,4 +1,5 @@
 const Client = require("../models/Client.model");
+const Drug = require("../models/Drugs.model")
 
 module.exports.clientController = {
     createClient: async (req, res) => {
@@ -36,22 +37,23 @@ module.exports.clientController = {
             res.json("Читы на деньги")
         })
     },
-    patchCleanCart: async (req, res) => {
-        const data = await Client.findByIdAndUpdate(req.params.id, {cart: []} )
-        res.json("Корзина очищена")
-    },
     patchDrugInCart: async (req, res) => {
+        const client = await Client.findById(req.params.id);
         const drug = await Drug.findById(req.body.drugId);
-        const client = await Client.findById(req.params.id)
-
-        if(drug.recipe === true && client.recipe === false)
-        return res.json("Нужен рецепт");
-
+        
+        if (drug.recipe == true && client.recipe == false) {
+            return res.json("Нужен рецепт");
+        }
+        
         await Client.findByIdAndUpdate(req.params.id, {
             $push: {cart: req.body.drugId}
         })
         
         res.json("лекарство добавлено в корзину")
+    },
+    patchCleanCart: async (req, res) => {
+        const data = await Client.findByIdAndUpdate(req.params.id, {cart: []} )
+        res.json("Корзина очищена")
     },
     deleteDrugInCart: async (req, res) => {
         await Client.findByIdAndUpdate(req.params.id, {
@@ -61,10 +63,11 @@ module.exports.clientController = {
         res.json("лекарство удалено из корзины");
     },
     buyDrugs: async (req, res) => {
-        const { cash, cart } = await Client.findById(req.body.userId).populate("cart")
+        const { cash, cart } = await Client.findById(req.body.userId).populate("cart");
     
-        const price = cart.reduce((acc, sum) => acc + sum.price, 0);
-        if(price > wallet) {
+        const price = await cart.reduce((acc, sum) => acc + sum.price, 0);
+       
+        if(price > cash) {
             return res.jsonn("не хватает ахч");
         }
 
